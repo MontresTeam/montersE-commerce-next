@@ -1,7 +1,9 @@
+"use client";
 import React, { memo, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // Lazy load icons for better performance
 const FiShoppingCart = lazy(() =>
@@ -69,23 +71,34 @@ const PriceDisplay = memo(({ price, mrp }) => {
 PriceDisplay.displayName = "PriceDisplay";
 
 const ProductCard = ({ product }) => {
-  
-  const navigate = useNavigate();
+  const imageUrl = product?.images?.[0]?.url;
+  // const navigate = useNavigate();
+  const router = useRouter();
 
   const handleViewDetails = () => {
     console.log("Navigating to product:", product);
-    navigate(`/ProductDetailPage/${product._id}`, { state: { product } });
+    router.push(`/ProductDetailPage/${product._id}`);
   };
   return (
     <div className="group bg-white rounded-md sm:rounded-lg overflow-hidden shadow-sm sm:shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5 xs:hover:-translate-y-1">
       <div className="relative w-full pb-[100%] sm:pb-[90%] md:pb-[85%] lg:pb-[80%] xl:pb-[76%] overflow-hidden">
-        <Image
-          src={product.images[0].url}
-          alt={product.name}
-          className="absolute top-0 left-0 w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
-          loading="lazy"
-          decoding="async"
-        />
+        {/* {console.log(product.images[0]?.url,"product.image")} */}
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product?.name || "Product image"}
+            fill
+            className="absolute top-0 left-0 w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
+          />
+        ) : (
+          // fallback image if missing
+          <Image
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeJQeJyzgAzTEVqXiGe90RGBFhfp_4RcJJMQ&s" // 👉 add a placeholder file in /public
+            alt="No image available"
+            fill
+            className="absolute top-0 left-0 w-full h-full object-cover object-center"
+          />
+        )}
         {product.badge && (
           <div className="absolute top-1 xs:top-2 sm:top-3 right-1 xs:right-2 sm:right-3 bg-gradient-to-r from-[#b58e5f] to-[#8b6b4a] text-white text-[8px] xs:text-[10px] tracking-wide font-semibold px-1.5 xs:px-2 sm:px-3 py-0.5 xs:py-0.5 sm:py-1 rounded-full shadow-sm sm:shadow-md">
             {product.badge}

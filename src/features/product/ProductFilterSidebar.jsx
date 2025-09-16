@@ -1,6 +1,8 @@
+"use client";
+
 import React, { useState, useMemo, memo, lazy, Suspense, useEffect } from "react";
 import { Disclosure } from '@headlessui/react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 // Lazy load icons for better performance
 const FiFilter = lazy(() => import('react-icons/fi').then(module => ({ default: module.FiFilter })));
@@ -209,7 +211,7 @@ const MenuItem = memo(({ item, dropdown, setDropdown }) => {
         </button>
       ) : (
         <Link
-          to={item.path}
+          href={item.path}
           className="w-full flex justify-between items-center px-4 py-3 xs:py-4 text-left text-gray-800 hover:bg-gray-50 transition-colors duration-200"
           onClick={() => setDropdown(null)}
         >
@@ -227,7 +229,7 @@ const MenuItem = memo(({ item, dropdown, setDropdown }) => {
             {item.subMenu.map((sub) => (
               <Link
                 key={sub.name}
-                to={sub.path}
+                href={sub.path}
                 className="block px-4 py-2 xs:py-3 text-gray-600 hover:bg-gray-100 border-t border-gray-200 text-xs xs:text-sm transition-colors duration-200"
                 onClick={() => setDropdown(null)}
               >

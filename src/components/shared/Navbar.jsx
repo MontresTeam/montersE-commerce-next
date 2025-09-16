@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useCallback } from "react";
 import {
   FaShoppingCart,
@@ -53,13 +54,16 @@ const Navbar = ({ onSignUpClick }) => {
   // Close mobile search when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMobileSearchOpen && !event.target.closest('.mobile-search-container')) {
+      if (
+        isMobileSearchOpen &&
+        !event.target.closest(".mobile-search-container")
+      ) {
         setIsMobileSearchOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileSearchOpen]);
 
   return (
@@ -79,7 +83,11 @@ const Navbar = ({ onSignUpClick }) => {
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+                {isMobileMenuOpen ? (
+                  <FaTimes size={20} />
+                ) : (
+                  <FaBars size={20} />
+                )}
               </button>
 
               <Link
@@ -115,7 +123,7 @@ const Navbar = ({ onSignUpClick }) => {
                   onFocus={handleSearchFocus}
                   onBlur={handleSearchBlur}
                 />
-                <button className="bg-gradient-to-r from-[#1e518e] to-[#0061b0ee] text-white px-4 md:px-5 flex items-center justify-center">
+                <button type="submit" className="bg-gradient-to-r from-[#1e518e] to-[#0061b0ee] text-white px-4 md:px-5 flex items-center justify-center">
                   <FaSearch className="text-sm md:text-base" />
                 </button>
               </div>
@@ -128,7 +136,7 @@ const Navbar = ({ onSignUpClick }) => {
                   {popularSearches.map((search) => (
                     <Link
                       key={search.term}
-                      to={search.path}
+                      href={search.path}
                       className="block px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
                       onClick={() => setIsSearchFocused(false)}
                     >
@@ -177,17 +185,17 @@ const Navbar = ({ onSignUpClick }) => {
                 <FaSearch size={18} />
               </button>
 
-              <Link 
-                href="/wishlist" 
-                className="p-2.5 rounded-full hover:bg-gray-100 transition-colors" 
+              <Link
+                href="/wishlist"
+                className="p-2.5 rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Wishlist"
               >
                 <FaHeart size={18} className="text-gray-700" />
               </Link>
 
-              <Link 
-                href="/cart" 
-                className="p-2.5 rounded-full hover:bg-gray-100 transition-colors" 
+              <Link
+                href="/cart"
+                className="p-2.5 rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Shopping cart"
               >
                 <FaShoppingCart size={18} className="text-gray-700" />
@@ -215,7 +223,7 @@ const Navbar = ({ onSignUpClick }) => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
                 />
-                <button 
+                <button
                   className="bg-[#1e518e] text-white px-4 flex items-center justify-center"
                   onClick={() => setIsMobileSearchOpen(false)}
                 >
@@ -230,7 +238,7 @@ const Navbar = ({ onSignUpClick }) => {
                   {popularSearches.map((search) => (
                     <Link
                       key={search.term}
-                      to={search.path}
+                      href={search.path}
                       className="block px-4 py-3 text-sm hover:bg-gray-50 transition-colors border-b last:border-b-0"
                       onClick={() => setIsMobileSearchOpen(false)}
                     >
