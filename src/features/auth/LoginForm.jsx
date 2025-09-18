@@ -1,8 +1,8 @@
+// LoginForm.js
 import React, { useState, useCallback } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 
-// eslint-disable-next-line no-unused-vars
 const LoginForm = ({ setActiveTab, onRequestClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,9 +31,9 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
   }, [formData]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 md:space-y-5">
       <div>
-        <h3 className="text-xl font-semibold mb-2">
+        <h3 className="text-xl font-semibold text-gray-800 mb-1">
           Sign in to your account
         </h3>
         <p className="text-sm text-gray-600">
@@ -56,7 +56,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Enter your email"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm"
             required
           />
         </div>
@@ -76,7 +76,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Enter your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 transition"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 transition text-sm"
               required
             />
             <button
@@ -85,7 +85,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
               onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
             </button>
           </div>
         </div>
@@ -118,13 +118,13 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
         
         <button
           type="submit"
-          className="w-full bg-gradient-to-r bg-[#2d5582]  hover:bg-[#2d5587] text-white py-2.5 px-4 rounded-md transition duration-200 shadow-md hover:shadow-lg"
+          className="w-full bg-[#2d5582]  hover:bg-[#2d5587] text-white py-2.5 px-4 rounded-lg transition duration-200 text-sm font-medium shadow-sm hover:shadow-md"
         >
           SIGN IN
         </button>
       </form>
 
-      <div className="relative my-6">
+      <div className="relative my-5">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-gray-300"></div>
         </div>
@@ -138,17 +138,17 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          className="flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 px-4 hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 px-4 hover:bg-gray-50 transition-colors text-sm"
         >
-          <FcGoogle size={20} />
-          <span className="text-sm font-medium">Google</span>
+          <FcGoogle size={18} />
+          <span className="font-medium">Google</span>
         </button>
         <button
           type="button"
-          className="flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 px-4 hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 px-4 hover:bg-gray-50 transition-colors text-sm"
         >
-          <FaFacebook size={20} className="text-blue-600" />
-          <span className="text-sm font-medium">Facebook</span>
+          <FaFacebook size={18} className="text-blue-600" />
+          <span className="font-medium">Facebook</span>
         </button>
       </div>
       
