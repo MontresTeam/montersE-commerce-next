@@ -1,66 +1,80 @@
-// Registerpage.js
+"use client";
 import React, { useState, useCallback } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const RegisterForm = ({ setActiveTab, onRequestClose }) => {
+const RegisterForm = ({ setActiveTab }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    agreeToTerms: false,
-  });
+  const [loading, setLoading] = useState(false);
+ 
 
+  const [name,setName]= useState("")
+  const [email,setEmail]= useState("")
+  const [password,setPassword] = useState("")
+  const [agreeToTerms,setAgreeToTerms] = useState("")
+
+  // // ✅ Handle input change
+  // const handleInputChange = useCallback((e) => {
+  //   const { name, value, type, checked } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: type === "checkbox" ? checked : value,
+  //   }));
+  // }, []);
+
+  // ✅ Toggle password visibility
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
 
-  const toggleConfirmPasswordVisibility = useCallback(() => {
-    setShowConfirmPassword((prev) => !prev);
-  }, []);
+  // ✅ Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const handleInputChange = useCallback((e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  }, []);
+    try {
+  const response = await axios.post(
+  "http://localhost:9000/api/Auth/register",
+  {
+    name,
+    email,
+    password,
+  }
+);
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      console.log("Registration data:", formData);
-      // onRequestClose(); // close modal on success
-    },
-    [formData]
-  );
+      if (response.status === 201 || response.status === 200) {
+        toast.success("🎉 Registration successful!");
+        setActiveTab("login"); // go to login tab
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "❌ Registration failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-4 md:space-y-5">
-      <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-1">
-          Create your account
-        </h3>
-        <p className="text-sm text-gray-600">Join our community today</p>
-      </div>
+      {/* Title */}
+      <h3 className="text-xl font-semibold text-gray-800 mb-1">
+        Create your account
+      </h3>
+      <p className="text-sm text-gray-600">Join our community today</p>
 
+      {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Username */}
         <div>
-          <label
-            htmlFor="register-username"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Username
           </label>
           <input
-            id="register-username"
             name="username"
-            value={formData.username}
-            onChange={handleInputChange}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Enter your username"
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition"
             required
@@ -69,18 +83,14 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
 
         {/* Email */}
         <div>
-          <label
-            htmlFor="register-email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Email Address
           </label>
           <input
             type="email"
-            id="register-email"
             name="email"
-            value={formData.email}
-            onChange={handleInputChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition"
             required
@@ -89,19 +99,15 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
 
         {/* Password */}
         <div>
-          <label
-            htmlFor="register-password"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              id="register-password"
               name="password"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 text-sm transition"
               required
@@ -109,9 +115,8 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               onClick={togglePasswordVisibility}
-              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
             </button>
@@ -123,18 +128,15 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
 
         {/* Terms */}
         <div className="flex items-start">
-          <div className="flex items-center h-5 mt-0.5">
-            <input
-              type="checkbox"
-              id="terms"
-              name="agreeToTerms"
-              checked={formData.agreeToTerms}
-              onChange={handleInputChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              required
-            />
-          </div>
-          <label htmlFor="terms" className="ml-2 block text-xs text-gray-700">
+          <input
+            type="checkbox"
+            name="agreeToTerms"
+            checked={agreeToTerms}
+            onChange={(e) => setAgreeToTerms(e.target.value)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+            required
+          />
+          <label className="ml-2 text-xs text-gray-700">
             I agree to the{" "}
             <a href="#" className="text-blue-600 hover:underline">
               Terms of Service
@@ -146,12 +148,17 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
           </label>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-[#2d5582]  hover:bg-[#2d5587] text-white py-2.5 px-4 rounded-lg transition duration-200 text-sm font-medium shadow-sm hover:shadow-md"
+          disabled={loading}
+          className="w-full bg-[#2d5582] hover:bg-[#2d5587] text-white py-2.5 px-4 rounded-lg transition text-sm font-medium shadow-sm hover:shadow-md flex justify-center items-center"
         >
-          CREATE ACCOUNT
+          {loading ? (
+            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+          ) : (
+            "CREATE ACCOUNT"
+          )}
         </button>
       </form>
 
@@ -165,7 +172,7 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
         </div>
       </div>
 
-      {/* Social Buttons */}
+      {/* Social buttons */}
       <div className="grid grid-cols-2 gap-3">
         <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 px-4 hover:bg-gray-50 transition-colors text-sm">
           <FcGoogle size={18} />
@@ -177,7 +184,7 @@ const RegisterForm = ({ setActiveTab, onRequestClose }) => {
         </button>
       </div>
 
-      {/* Switch to Login */}
+      {/* Switch to login */}
       <p className="text-sm text-gray-600 text-center mt-4">
         Already have an account?{" "}
         <button

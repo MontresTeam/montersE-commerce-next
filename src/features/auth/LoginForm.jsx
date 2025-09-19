@@ -2,33 +2,45 @@
 import React, { useState, useCallback } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const LoginForm = ({ setActiveTab, onRequestClose }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    rememberMe: false
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState("")
+  const [Loading,setLoading]=useState("")
 
   const togglePasswordVisibility = useCallback(() => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   }, []);
 
-  const handleInputChange = useCallback((e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  }, []);
 
-  const handleSubmit = useCallback((e) => {
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login data:", formData);
-    // onRequestClose(); // Close modal on successful login
-  }, [formData]);
+
+    try {
+      const response = await axios.post(
+        " http://localhost:9000/api/Auth/Login",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.status === 201 || response.status === 200) {
+        toast.success(" Login successful!");
+        onRequestClose()
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "❌Login failed!");
+    }finally{
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-4 md:space-y-5">
@@ -40,7 +52,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
           Access your personalized dashboard
         </p>
       </div>
-      
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label
@@ -53,14 +65,14 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
             type="email"
             id="login-email"
             name="email"
-            value={formData.email}
-            onChange={handleInputChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm"
             required
           />
         </div>
-        
+
         <div>
           <label
             htmlFor="login-password"
@@ -73,8 +85,8 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
               type={showPassword ? "text" : "password"}
               id="login-password"
               name="password"
-              value={formData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10 transition text-sm"
               required
@@ -89,15 +101,15 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
             </button>
           </div>
         </div>
-        
+
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <input
               type="checkbox"
               id="remember-me"
               name="rememberMe"
-              checked={formData.rememberMe}
-              onChange={handleInputChange}
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.value)}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label
@@ -115,7 +127,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
             Forgot Password?
           </button>
         </div>
-        
+
         <button
           type="submit"
           className="w-full bg-[#2d5582]  hover:bg-[#2d5587] text-white py-2.5 px-4 rounded-lg transition duration-200 text-sm font-medium shadow-sm hover:shadow-md"
@@ -129,9 +141,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
           <div className="w-full border-t border-gray-300"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">
-            Or continue with
-          </span>
+          <span className="px-2 bg-white text-gray-500">Or continue with</span>
         </div>
       </div>
 
@@ -151,7 +161,7 @@ const LoginForm = ({ setActiveTab, onRequestClose }) => {
           <span className="font-medium">Facebook</span>
         </button>
       </div>
-      
+
       <p className="text-sm text-gray-600 text-center mt-4">
         Don't have an account?{" "}
         <button
